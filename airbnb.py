@@ -6,7 +6,8 @@ from pprint import pprint
 import simplejson as json
 import datetime
 
-def get():
+
+def get(sort):
     more = True
     offset = 0
     page_size = 50
@@ -28,7 +29,7 @@ def get():
                     "ib": "false",
                     "ib_add_photo_flow": "true",
                     "location": "Long Beach, CA, US",
-                    "sort": "1",
+                    "sort": str(sort),
                 },
             )
 
@@ -44,9 +45,9 @@ def get():
     return results
 
 
-def save(records):
+def save(records, sort):
     os.makedirs('./_data', exist_ok=True)
-    path = './_data/{:%Y%m%d_%H%M%S}.json'.format(datetime.datetime.now())
+    path = './_data/{:%Y%m%d_%H%M%S}_{}.json'.format(datetime.datetime.now(), sort)
 
     with open(path, 'w') as f:
         json.dump(records, f, indent=4, ensure_ascii=False, sort_keys=True)
@@ -54,8 +55,13 @@ def save(records):
     return path
 
 
-results = get()
-saved = save(results)
+pprint('getting records with sort=1')
+results = get(1)
+saved = save(results, 1)
+
+pprint('getting records with sort=0')
+results = get(0)
+saved = save(results, 0)
 
 pprint(saved)
 pprint('--------------------------------------------------')
